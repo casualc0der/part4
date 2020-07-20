@@ -15,6 +15,7 @@
     "mongoose": "^5.9.25"
   },
   "scripts": {
+    "start": "node index.js",
     "dev": "nodemon index.js"
   }
 }
