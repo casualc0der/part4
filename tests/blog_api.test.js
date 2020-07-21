@@ -75,6 +75,31 @@ describe("POST", () => {
     expect(response.body).toHaveLength(mockBlogs.length);
   });
 });
+describe("DELETE", () => {
+  test("deletes blog from the list", async () => {
+    await api.delete(`/api/blogs/${mockBlogs[0]._id}`).expect(204);
+    const response = await api.get("/api/blogs");
+    const contents = response.body;
+    expect(contents.length).toBe(mockBlogs.length - 1);
+  });
+});
+describe("PUTS/EDIT", () => {
+  test("find a blog by id, and update the like count", async () => {
+    const blog = mockBlogs[0];
+    await api
+      .put(`/api/blogs/${blog._id}`)
+      .send({
+        author: blog.author,
+        title: blog.title,
+        url: blog.url,
+        likes: blog.likes + 1,
+      })
+      .expect(201);
+    const response = await api.get("/api/blogs");
+    const content = response.body.filter((b) => b.title === blog.title);
+    expect(content[0].likes).toBe(blog.likes + 1);
+  });
+});
 afterAll(() => {
   mongoose.connection.close();
 });
