@@ -13,6 +13,18 @@ usersRouter.get("/", async (req, res) => {
 });
 
 usersRouter.post("/", async (req, res) => {
+  if (!req.body.username || !req.body.name) {
+    return res.status(401).json({
+      error: "missing username or password",
+    });
+  }
+
+  if (req.body.password.length < 3) {
+    return res.status(401).json({
+      error: "password must be 3 or more characters",
+    });
+  }
+
   const body = req.body;
 
   const saltRounds = 10;
