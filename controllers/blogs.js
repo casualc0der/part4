@@ -34,11 +34,13 @@ blogsRouter.post("/", async (request, response) => {
 blogsRouter.delete("/:id", async (request, response) => {
   const blog = await Blog.findById(request.params.id);
   const user = await User.findById(blog.user);
-  if (blog.user.toString() === user._id.toString() && request.token) {
+  const token = request.token;
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+  if (!token || !decodedToken.id) {
+    response.status(401).json({ error: "no token/wrong user" });
+  } else {
     await Blog.findByIdAndRemove(request.params.id);
     response.status(204).end();
-  } else {
-    response.status(401).json({ error: "no token/wrong user" });
   }
 });
 
